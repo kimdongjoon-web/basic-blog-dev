@@ -1,40 +1,44 @@
 # Basic Blog Dev
 
 ## 업데이트 내용
-단위 테스트 추가
+- 테스트용 데이터 추가
+- 테스트 설정 추가
+- Member 클래스에 수정 메서드 추가
+- MemberRepository 클래스에 쿼리 메서드 추가
+- MemberRepositoryTest 추가
 
-## 상세 내용
-1. MockMvc를 사용한 컨트롤러 단위 테스트 추가
+![JPA drawio](https://github.com/user-attachments/assets/360883b8-f30f-42f7-b1a0-dc16861fddfa)
 
-## 사용 기술
-- Spring Boot 3.2.0
-- Spring Data JPA
-- H2 인메모리 데이터베이스
-- Lombok
-- JUnit 5
-- MockMvc
+## 학습 내용
+- ORM(Object-relational mapping) : 자바의 객체와 데이터베이스를 연결하는 프로그래밍 기법
+  - 객체와 데이터베이스를 연결해 자바 언어로 데이터베이스를 다룰 수 있게 하는 도구
+  - ORM에는 여러 종류가 있다. 자바에서는 JPA를 표준으로 사용한다.
 
-## 단위 테스트
-- MockMvc를 사용하여 컨트롤러 레벨의 단위 테스트 구현
-- `TestControllerTest`와 `QuizControllerTest` 클래스에서 각 컨트롤러의 엔드포인트 테스트
 
-### MockMvc 설명
-MockMvc는 실제 서버를 구동하지 않고도 Spring MVC 동작을 재현할 수 있게 해주는 테스트 프레임워크
+  - JPA(Java persistence API)
+    - 자바에서 관계형 데이터베이스를 사용하는 방식을 정의한 인터페이스
+    - 인터페이스이므로 실제 사용을 위해서는 ORM 프레임워크를 추가로 선택해야 함
+      - 대표적으로는 하이버네이트(hibernate)를 많이 사용
+      - Hibernate : JPA 인터페이스를 구현한 구현체이자 자바용 ORM 프레임워크
+        - 내부적으로는 JDBC API를 사용
+        - 하이버네이트의 목표는 자바 객체를 통해 DB종류에 상관없이 DB를 자유롭게 사용하는 것
 
-주요 특징:
 
-- HTTP 요청을 시뮬레이션하여 컨트롤러를 테스트
-- 응답의 상태 코드, 헤더, 본문 등을 검증
-- `@AutoConfigureMockMvc` 어노테이션을 사용하여 쉽게 설정 가능
-- 테스트 메소드에서 `perform()` 메소드를 통해 요청을 보내고, `andExpect()` 메소드로 응답을 검증
+- Entity : 데이터베이스의 테이블과 매핑되는 객체
 
-예시:
-```java
-mockMvc.perform(get("/test"))
-       .andExpect(status().isOk())
-       .andExpect(jsonPath("$[0].name").value("홍길동"));
-```
 
-## 주의사항
-- H2 인메모리 데이터베이스는 애플리케이션 재시작 시 초기화됨
-- 단위 테스트 실행 시 실제 데이터베이스에 영향을 주지 않음
+- Spring Data JPA : 스프링 데이터의 공통적인 기능에 JPA의 유용한 기술이 추가된 기술
+
+
+- JPA에서 데이터를 수정할 때는 @Transactional 애너테이션 사용
+  - Transactional 애너테이션이 포함된 메서드에서 호출되면 JPA는 변경 감지 기능을 통해 엔티티의 필드값이 변경될 때 그 변경 사항을 데이터베이스에 자동으로 반영
+  - 만약 엔티티가 영속 상태일 때 필드값을 변경하고 트랜잭션이 커밋되면 JPA는 변경 사항을 데이터베이스에 자동으로 적용
+
+
+- @Entity 애너테이션은 객체를 JPA가 관리하는 엔티티로 지정
+  - 즉, 클래스와 실제 데이터베이스의 테이블을 매핑
+
+
+- Repository는 Entity에 있는 데이터를 조회하거나 저장, 변경, 삭제를 할 때 사용하는 인터페이스
+- 스프링 데이터 JPA에서 제공하는 인터페이스인 JpaRepository 클래스를 상속받아 간단하게 구현 가능
+- JpaRepository 클래스를 상속받을 때, 엔티티 + 엔티티의 기본키 타입(ex. Member, Long)을 인수로 넣어준다
