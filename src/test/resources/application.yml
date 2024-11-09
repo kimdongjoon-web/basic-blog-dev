@@ -1,0 +1,4 @@
+spring:
+  sql:
+    init:
+      mode: never # 애플리케이션 시작 시 SQL 스크립트를 자동으로 실행하지 않도록 설정
